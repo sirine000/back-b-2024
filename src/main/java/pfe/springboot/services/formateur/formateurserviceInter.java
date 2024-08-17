@@ -1,6 +1,5 @@
 package pfe.springboot.services.formateur;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import pfe.springboot.entities.Formateur;

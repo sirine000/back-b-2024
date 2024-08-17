@@ -25,11 +25,8 @@ import pfe.springboot.services.admin.adminServInter;
 @RequestMapping("/admin")
 public class adminControler {
 
-  @Autowired
-  private adminServInter adminServiceInter;
-
-
-   
+    @Autowired
+    private adminServInter adminServiceInter;
 
     @GetMapping("/login")
     public ResponseEntity<?> seConnecterAdmin(@RequestParam String email, @RequestParam String password) {
@@ -40,8 +37,8 @@ public class adminControler {
         System.out.println(email);
         return ResponseEntity.ok(admin);
     }
-    
-       @PutMapping(value = "/modifieradmin/{id_admin}")
+
+    @PutMapping(value = "/modifieradmin/{id_admin}")
     public Admin updateprof(@PathVariable Long id_admin, @RequestBody Admin adminmodifier) {
         return adminServiceInter.updateAdmin(id_admin, adminmodifier);
     }

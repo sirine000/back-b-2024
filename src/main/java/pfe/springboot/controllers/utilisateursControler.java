@@ -16,7 +16,6 @@ public class utilisateursControler {
     @Autowired
     utilisateursServiceInter utilisateursServiceInter;
 
-
     @PostMapping(value = "/ajouterutilisateur")
     public utilisateurs addutilisateurs(@RequestBody utilisateurs u) {
         return utilisateursServiceInter.addutilisateurs(u);

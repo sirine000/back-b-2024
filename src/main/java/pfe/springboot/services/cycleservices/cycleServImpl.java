@@ -37,6 +37,11 @@ public class cycleServImpl implements cycleServInter{
     }
 
     @Override
+    public List<cycle> getCyclesForFormateur(Long formateurId) {
+        return cycleRepo.findCyclesByFormateurId(formateurId);
+    }
+    
+    @Override
     public List<cycle> listecycle() {
         return cycleRepo.findAll();
     }

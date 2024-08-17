@@ -9,15 +9,15 @@ import pfe.springboot.repository.adminRepository;
 
 @Service
 public class adminServImpl implements adminServInter {
-   @Autowired
+    @Autowired
     adminRepository adminRepository;
 
-   @Override
-   public Admin connecter(String email, String password) {
-       return adminRepository.findByEmailAndPassword(email, password);
-   }
-    
-     @Override
+    @Override
+    public Admin connecter(String email, String password) {
+        return adminRepository.findByEmailAndPassword(email, password);
+    }
+
+    @Override
     public Admin updateAdmin(Long id_admin, Admin adminmodifier) {
         // Check if the admin exists
         Admin existingAdmin = adminRepository.findById(id_admin)

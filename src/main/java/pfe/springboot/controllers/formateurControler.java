@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import pfe.springboot.entities.Formateur;
+import pfe.springboot.entities.cours;
 import pfe.springboot.entities.cycle;
+import pfe.springboot.repository.coursRepo;
+import pfe.springboot.repository.cycleRepo;
 import pfe.springboot.services.formateur.formateurServiceImpl;
 import pfe.springboot.services.formateur.formateurserviceInter;
 
@@ -23,6 +26,11 @@ import java.util.*;
 public class formateurControler {
     @Autowired
     formateurserviceInter formateurServiceInter;
+    @Autowired
+    private coursRepo coursRepository;
+
+    @Autowired
+    private cycleRepo cycleRepository;
 
     @PostMapping("/ajouterformateur")
     public ResponseEntity<?> ajouterFormateur(@Valid @RequestBody Formateur formateur, BindingResult result) {
@@ -86,6 +94,7 @@ public class formateurControler {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     @Autowired
     formateurServiceImpl formateurservice;
 
@@ -131,7 +140,6 @@ public class formateurControler {
         return formateurServiceInter.updateProf(id_formateur, formateurmodifier);
     }
 
-
     @PutMapping("/activateFormateur/{id}")
     public ResponseEntity<Formateur> activateFormateur(@PathVariable Long id) {
         Formateur updatedFormateur = formateurServiceInter.activateFormateur(id);
@@ -148,5 +156,23 @@ public class formateurControler {
     public Optional<cycle> getformateurteurbid(@PathVariable Long id_cycle) {
         return formateurServiceInter.getcycleid(id_cycle);
     }
+
+        @GetMapping("/coursbyFormateur/{formateurId}")
+    public ResponseEntity<List<cours>> getCoursByFormateur(@PathVariable Long formateurId) {
+        try {
+            // Récupérer les cycles associés au formateur
+            List<cycle> cycles = cycleRepository.findCyclesByFormateurId(formateurId);
+            if (cycles.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            // Récupérer les cours associés aux cycles
+            List<cours> coursList = coursRepository.findByCycleIn(cycles);
+            return ResponseEntity.ok(coursList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
 }

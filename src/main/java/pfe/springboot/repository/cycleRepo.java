@@ -19,8 +19,10 @@ public interface cycleRepo extends JpaRepository<cycle, Long> {
     @Query("SELECT  f.nomEtPrenom FROM cycle c JOIN c.formateur f")
     List<Object[]> getCyclefromateurtest();
 
+    @Query("SELECT c FROM cycle c WHERE c.formateur.id_formateur = :id_formateur")
+    List<cycle> findCyclesByFormateurId(@Param("id_formateur") Long id_formateur);
 
-   // List<cycle> findById(Long idCycle);
+    // List<cycle> findById(Long idCycle);
 
 //    Optional<Formateur> findByNom(String nomEtPrenom);
 }

@@ -3,6 +3,11 @@ package pfe.springboot.services.participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import io.jsonwebtoken.io.IOException;
+import pfe.springboot.entities.Formateur;
 import pfe.springboot.entities.participant;
 import pfe.springboot.repository.participantRepository;
 
@@ -13,11 +18,33 @@ public class participantserviceimpl implements participantserviceinter {
 
        @Override
        public participant addparticipant(participant f) {
-           BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+           BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
            String encryptedPassword = passwordEncoder.encode(f.getPassword());
            f.setPassword(encryptedPassword);
            return participantRepository.save(f);
        }
+       
+    @Override
+    public void savePhoto(Long id, MultipartFile file) throws IOException {
+        try {
+            participant participant = participantRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Participant not found"));
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            participant.setPhoto(file.getBytes());
+            participantRepository.save(participant);
+        } catch (IOException e) {
+            // Handle the exception as needed
+            throw new RuntimeException("Failed to save photo", e);
+        } catch (java.io.IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public participant userid(Long id_participant) {
+        return participantRepository.findById(id_participant).orElse(null);
+    }
 
     @Override
     public participant updatePart(Long id_participant, participant participantmodifier) {

@@ -35,41 +35,40 @@ public class formateurServiceImpl implements formateurserviceInter {
 
     @Override
     public Formateur addformateur(Formateur f) {
-        BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encryptedPassword = passwordEncoder.encode(f.getPassword());
         f.setPassword(encryptedPassword);
-
 
         return formateurRepository.save(f);
     }
 
     @Override
-    public String confirmdata(Formateur data)
-    {
-        String ch="";
-        if(data.getPassword().equals(data.getConfPassword()) ) {
+    public String confirmdata(Formateur data) {
+        String ch = "";
+        if (data.getPassword().equals(data.getConfPassword())) {
             formateurRepository.save(data);
-            ch="enregistrement fait avec succès !";
+            ch = "enregistrement fait avec succès !";
 
-        }else{ ch="vérifier le mot de passe !";}
+        } else {
+            ch = "vérifier le mot de passe !";
+        }
 
-
-        return ch ;
+        return ch;
 
     }
 
     @Override
-    public String confirmemail(Formateur email){
-        String ch1 ="";
-        if( formateurRepository.existsByEmail(email.getEmail())) {
+    public String confirmemail(Formateur email) {
+        String ch1 = "";
+        if (formateurRepository.existsByEmail(email.getEmail())) {
 
             ch1 = "email exist!";
-        }else {
+        } else {
             formateurRepository.save(email);
-            ch1="enregistrement fait avec succées!";
+            ch1 = "enregistrement fait avec succées!";
+        }
+        return ch1;
     }
-    return ch1 ;
-}
 
     @Override
     public Formateur updateProf(Long id_formateur, Formateur formateurmodifier) {
@@ -88,21 +87,20 @@ public class formateurServiceImpl implements formateurserviceInter {
         return formateurRepository.save(existingFormateur);
     }
 
-  // @Override
+    // @Override
     public ResponseEntity<Map> listprof() {
-        Map map=new HashMap() ;
-        List<Formateur> formateurs=formateurRepository.findAll();
-       map.put("formateurmap" ,formateurs);
-       map.put("message ","hello" );
-        map.put("message2" ,12 );
+        Map map = new HashMap();
+        List<Formateur> formateurs = formateurRepository.findAll();
+        map.put("formateurmap", formateurs);
+        map.put("message ", "hello");
+        map.put("message2", 12);
 
-        return new ResponseEntity<>(map,HttpStatus.OK);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
-
 
     @Override
     public Formateur userid(Long id_formateur) {
-        return formateurRepository.findById(id_formateur ).orElse(null);
+        return formateurRepository.findById(id_formateur).orElse(null);
     }
 
     @Override
@@ -126,19 +124,18 @@ public class formateurServiceImpl implements formateurserviceInter {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public List<Formateur> listesearch(String email) {
         return formateurRepository.userEmail(email);
     }
 
     @Override
-    public List<Formateur>nomprof(String nomEtPrenom ) {
-        return formateurRepository.findAll() ;   }
+    public List<Formateur> nomprof(String nomEtPrenom) {
+        return formateurRepository.findAll();
+    }
 
-
-
-     @Override
+    @Override
     public List<String> getnoms() {
         List<String> nomsprof = new ArrayList<>();
         List<Formateur> formateurs = formateurRepository.findAll();
@@ -149,8 +146,8 @@ public class formateurServiceImpl implements formateurserviceInter {
     }
 
     @Override
-    public void deleteformateur(Long id_formateur ) {
-        formateurRepository.deleteById(id_formateur );
+    public void deleteformateur(Long id_formateur) {
+        formateurRepository.deleteById(id_formateur);
 
     }
 
@@ -158,6 +155,7 @@ public class formateurServiceImpl implements formateurserviceInter {
     public Formateur connecter(String email, String password) {
         return formateurRepository.findByEmailAndPassword(email, password);
     }
+
     @Override
     public Optional<cycle> getcycleid(Long idCycle) {
         return Optional.empty();

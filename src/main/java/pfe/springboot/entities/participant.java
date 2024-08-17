@@ -19,7 +19,9 @@ public class participant {
     private String email ;
     private String password ;
 
-
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] photo;
 
 
 }

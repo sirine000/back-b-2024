@@ -1,5 +1,7 @@
 package pfe.springboot.services.participant;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import pfe.springboot.entities.participant;
 
 public interface participantserviceinter {
@@ -11,7 +13,9 @@ public interface participantserviceinter {
 
     void deleteparticipant(Long id_participant);
 
-    // public participant activateparticipant(Long id);
+    public participant userid(Long id_participant);
 
+    public void savePhoto(Long id, MultipartFile file);
+    // public participant activateparticipant(Long id);
     // public participant deactivateparticipant(Long id);
 }

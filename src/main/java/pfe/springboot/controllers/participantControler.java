@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import pfe.springboot.entities.Formateur;
 import pfe.springboot.entities.participant;
 import pfe.springboot.services.userServicesinter;
 import pfe.springboot.services.participant.participantserviceinter;
@@ -68,13 +70,13 @@ public class participantControler {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody participant user) {
+    public ResponseEntity<?> login(@RequestBody participant user) {
         Optional<participant> existingUser = userServicesinter.findByEmail(user.getEmail());
 
         if (existingUser.isPresent() && existingUser.get().getPassword().equals(user.getPassword())) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Connexion réussie.");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(existingUser);
         } else {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Email ou mot de passe incorrect.");
@@ -93,8 +95,25 @@ public class participantControler {
      * userServicesinter.deleteuser(user );
      * }
      */
+    @PostMapping("/uploadPhoto/{id}")
+    public ResponseEntity<Map<String, String>> uploadPhoto(@PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            participantServicesinter.savePhoto(id, file);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Photo uploaded successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Échec du téléchargement de la photo");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+ @GetMapping(value = "/userid/{id_participant}")
+    public participant userid(@PathVariable Long id_participant) {
+        return participantServicesinter.userid(id_participant);
 
-
+    }
     @DeleteMapping(value = "/del/{id_participant}")
     public void deleteparticipant(@PathVariable Long id_participant) {
         participantServicesinter.deleteparticipant(id_participant);
