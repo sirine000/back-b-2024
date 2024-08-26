@@ -33,6 +33,57 @@ public class coursControl {
     @Autowired
     private cycleRepo cycleRepository;
 
+//    @PostMapping("/inserercyclecours")
+//    public ResponseEntity<String> insererCycleCours(
+//            @RequestParam("fichiers") List<MultipartFile> fichiers,
+//            @RequestParam("nomCours") String nomCours,
+//            @RequestParam("description") String description,
+//            @RequestParam("idCycle") Long idCycle) throws java.io.IOException {
+//
+//        try {
+//            List<byte[]> filePaths = new ArrayList<>();
+//            String uploadDir = "C:/Users/DELL/IdeaProjects/back-f/uploads/";
+//
+//
+//            File dir = new File(uploadDir);
+//            if (!dir.exists()) {
+//                dir.mkdirs();
+//            }
+//
+//            // Process each file
+//            for (MultipartFile fichier : fichiers) {
+//                try {
+//                    byte[] fileContent = fichier.getBytes(); // Convert file to byte array
+//                    filePaths.add(fileContent);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            // Find the cycle by ID
+//            cycle cycle = cycleRepository.findById(idCycle)
+//                    .orElseThrow(() -> new IllegalArgumentException("Invalid cycle ID"));
+//
+//            // Create and save the course
+//            cours cours = new cours();
+//            cours.setNomCours(nomCours);
+//            cours.setDescription(description);
+//            cours.setCycle(cycle);
+//            cours.setFileContents(filePaths); // Save the file paths
+//
+//            coursRepository.save(cours);
+//
+//            return ResponseEntity.ok("Fichiers uploadés avec succès");
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Erreur lors de l'upload des fichiers: " + e.getMessage());
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body("Erreur: " + e.getMessage());
+//        }
+//    }
+
+
     @PostMapping("/inserercyclecours")
     public ResponseEntity<String> insererCycleCours(
             @RequestParam("fichiers") List<MultipartFile> fichiers,
@@ -41,38 +92,41 @@ public class coursControl {
             @RequestParam("idCycle") Long idCycle) throws java.io.IOException {
 
         try {
-            List<byte[]> filePaths = new ArrayList<>();
-            String uploadDir = "C:/Users/Montasser Brahem/OneDrive/Bureau/pfe-sirine/springboot/uploads";
-         
+            List<byte[]> fileContents = new ArrayList<>();
+            String uploadDir = "C:/Users/DELL/IdeaProjects/back-f/uploads/";
+
+            // Créer le répertoire de téléchargement s'il n'existe pas
             File dir = new File(uploadDir);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
 
-            // Process each file
+            // Traiter chaque fichier
             for (MultipartFile fichier : fichiers) {
                 try {
-                    byte[] fileContent = fichier.getBytes(); // Convert file to byte array
-                    filePaths.add(fileContent);
+                    byte[] fileContent = fichier.getBytes(); // Convertir le fichier en tableau d'octets
+                    fileContents.add(fileContent);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Erreur lors de la lecture du fichier: " + fichier.getOriginalFilename());
                 }
             }
 
-            // Find the cycle by ID
+            // Rechercher le cycle par ID
             cycle cycle = cycleRepository.findById(idCycle)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid cycle ID"));
+                    .orElseThrow(() -> new IllegalArgumentException("ID de cycle invalide: " + idCycle));
 
-            // Create and save the course
+            // Créer et enregistrer le cours
             cours cours = new cours();
             cours.setNomCours(nomCours);
             cours.setDescription(description);
             cours.setCycle(cycle);
-            cours.setFileContents(filePaths); // Save the file paths
+            cours.setFileContents(fileContents); // Enregistrer le contenu des fichiers
 
             coursRepository.save(cours);
 
-            return ResponseEntity.ok("Fichiers uploadés avec succès");
+            return ResponseEntity.ok("Fichiers uploadés et cours créé avec succès");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erreur lors de l'upload des fichiers: " + e.getMessage());
@@ -81,6 +135,10 @@ public class coursControl {
                     .body("Erreur: " + e.getMessage());
         }
     }
+
+
+
+
 
     // @PutMapping("/update/{id}")
     // public ResponseEntity<cours> updateCours(@PathVariable Long id, @RequestBody cours cours) {
@@ -92,7 +150,26 @@ public class coursControl {
         coursInter.deleteCours(id);
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping("/delete-file/{id}/{fileIndex}")
+    public ResponseEntity<Void> deleteFileFromCourse(@PathVariable Long id, @PathVariable int fileIndex) {
+        Optional<cours> existingCours = coursRepository.findById(id);
 
+        if (existingCours.isPresent()) {
+            cours cours = existingCours.get();
+            List<byte[]> fileContents = cours.getFileContents();
+
+            if (fileIndex >= 0 && fileIndex < fileContents.size()) {
+                fileContents.remove(fileIndex); // Remove the file at the specified index
+                cours.setFileContents(fileContents); // Update the course entity
+                coursRepository.save(cours); // Save the updated course
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Invalid file index
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Course not found
+        }
+    }
     @GetMapping("/all")
     public ResponseEntity<List<cours>> getAllCours() {
         return ResponseEntity.ok(coursInter.getAllCours());

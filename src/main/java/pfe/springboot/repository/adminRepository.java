@@ -5,24 +5,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import pfe.springboot.entities.Admin;
+import pfe.springboot.entities.admin;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface adminRepository extends JpaRepository<Admin, Long> {
+public interface adminRepository extends JpaRepository<admin, Long> {
 
     boolean existsByEmail(String email);
 
-    Optional<Admin> findByEmail(String email);
+    Optional<admin> findByEmail(String email);
 
-    Admin findByNomEtPrenom(String nomEtPrenom);
+    admin findByNomEtPrenom(String nomEtPrenom);
 
-    Admin findByEmailAndPassword(String email, String password);
+    admin findByEmailAndPassword(String email, String password);
 
     @Query(value = "select * from admin f  where f.email like :cle%", nativeQuery = true)
-    List<Admin> userEmail(@Param("cle") String email);
+    List<admin> userEmail(@Param("cle") String email);
 
     // Optional<Formateur> findByn(String nomEtPrenom);
 }

@@ -3,8 +3,7 @@ package pfe.springboot.services.admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import pfe.springboot.entities.Admin;
-import pfe.springboot.entities.Formateur;
+import pfe.springboot.entities.admin;
 import pfe.springboot.repository.adminRepository;
 
 @Service
@@ -13,14 +12,14 @@ public class adminServImpl implements adminServInter {
     adminRepository adminRepository;
 
     @Override
-    public Admin connecter(String email, String password) {
+    public admin connecter(String email, String password) {
         return adminRepository.findByEmailAndPassword(email, password);
     }
 
     @Override
-    public Admin updateAdmin(Long id_admin, Admin adminmodifier) {
+    public admin updateAdmin(Long id_admin, admin adminmodifier) {
         // Check if the admin exists
-        Admin existingAdmin = adminRepository.findById(id_admin)
+        admin existingAdmin = adminRepository.findById(id_admin)
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
         // Update the existing admin with the new values

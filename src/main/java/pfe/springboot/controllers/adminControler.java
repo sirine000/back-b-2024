@@ -3,22 +3,15 @@ package pfe.springboot.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pfe.springboot.entities.Admin;
-import pfe.springboot.entities.Formateur;
+import pfe.springboot.entities.admin;
 import pfe.springboot.services.admin.adminServInter;
 
 @RestController
@@ -30,7 +23,7 @@ public class adminControler {
 
     @GetMapping("/login")
     public ResponseEntity<?> seConnecterAdmin(@RequestParam String email, @RequestParam String password) {
-        Admin admin = adminServiceInter.connecter(email, password);
+        admin admin = adminServiceInter.connecter(email, password);
         if (admin == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Identifiants invalides");
         }
@@ -39,7 +32,7 @@ public class adminControler {
     }
 
     @PutMapping(value = "/modifieradmin/{id_admin}")
-    public Admin updateprof(@PathVariable Long id_admin, @RequestBody Admin adminmodifier) {
+    public admin updateprof(@PathVariable Long id_admin, @RequestBody admin adminmodifier) {
         return adminServiceInter.updateAdmin(id_admin, adminmodifier);
     }
 

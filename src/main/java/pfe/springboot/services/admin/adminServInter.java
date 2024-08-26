@@ -1,9 +1,9 @@
 package pfe.springboot.services.admin;
 
-import pfe.springboot.entities.Admin;
+import pfe.springboot.entities.admin;
 
 public interface adminServInter {
-     public Admin connecter(String email, String password);
-     Admin updateAdmin(Long id_admin, Admin updateProf);
+     public admin connecter(String email, String password);
+     admin updateAdmin(Long id_admin, admin updateProf);
 
 }

@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 
-public class Admin {
+public class admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
