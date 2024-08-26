@@ -123,7 +123,26 @@ public class participantControler {
     public participant updateprof(@PathVariable Long id_participant, @RequestBody participant participantmodifier) {
         return participantServicesinter.updatePart(id_participant, participantmodifier);
     }
+   @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        participantServicesinter.sendPasswordResetToken(email);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Password reset link sent to your email.");
+        return ResponseEntity.ok(response);
+    }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("newPassword");
+        participantServicesinter.resetPassword(token, newPassword);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Password successfully reset.");
+
+        return ResponseEntity.ok(response);
+    }
 
     // @PutMapping("/activateParticipant/{id}")
     // public ResponseEntity<participant> activateParticipant(@PathVariable Long id) {

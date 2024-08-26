@@ -22,6 +22,16 @@ public class participant {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] photo;
+    
+    @Column
+    private String resetToken;
 
+    public String getResetToken() {
+      return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+      this.resetToken = resetToken;
+    }
 
 }

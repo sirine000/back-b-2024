@@ -13,10 +13,11 @@ public interface participantRepository extends JpaRepository<participant, Long> 
 
     boolean existsByEmail(String email);
 
-    Optional<participant> findByEmail(String email);
+    participant findByEmail(String email);
 
     participant findByNom(String nom);
 
+    participant findByResetToken(String resetToken);
 
     participant findByEmailAndPassword(String email, String password);
 

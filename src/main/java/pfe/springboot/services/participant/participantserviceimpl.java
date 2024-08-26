@@ -5,17 +5,56 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import io.jsonwebtoken.io.IOException;
 import pfe.springboot.entities.Formateur;
 import pfe.springboot.entities.participant;
 import pfe.springboot.repository.participantRepository;
 
+import java.util.Optional;
+import java.util.UUID;
 @Service
 public class participantserviceimpl implements participantserviceinter {
         @Autowired
     private participantRepository participantRepository;
+  @Autowired
+    private JavaMailSender mailSender;
 
+    @Override
+    public void sendPasswordResetToken(String email) {
+     participant user = participantRepository.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("No user associated with this email.");
+        }
+
+        // Generate a reset token
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        participantRepository.save(user);
+
+        // Create the email message
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Password Reset Request");
+        mailMessage.setText("To reset your password, click the link below:\n"
+                + "http://localhost:4200/reset-password?token=" + token);
+        mailSender.send(mailMessage);
+    }
+
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        participant user = participantRepository.findByResetToken(token);
+        if (user == null) {
+            throw new IllegalArgumentException("Invalid reset token.");
+        }
+
+        // Encrypt and update the new password
+        user.setPassword(newPassword);
+        user.setResetToken(null); // Clear the reset token
+
+        participantRepository.save(user);
+    }
        @Override
        public participant addparticipant(participant f) {
            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

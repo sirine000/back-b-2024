@@ -18,4 +18,8 @@ public interface participantserviceinter {
     public void savePhoto(Long id, MultipartFile file);
     // public participant activateparticipant(Long id);
     // public participant deactivateparticipant(Long id);
+
+        public void sendPasswordResetToken(String email);
+    
+    public void resetPassword(String token, String newPassword);
 }
